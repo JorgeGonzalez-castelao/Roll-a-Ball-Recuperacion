@@ -124,10 +124,7 @@ public class PlayerController : MonoBehaviour
 		countText.text = "Count: " + count.ToString();
 		countText.text = countText.text + "\nPick Ups left: " + CountPickupsLeft().ToString();
 		countText.text = countText.text + "\nSpeed: " + speed.ToString() ;
-		if (CountPickupsLeft() == 0)
-        {
-            winTextObject.SetActive(true);
-        }
+		hasWin();
 	}
 
 	void OnTriggerEnter(Collider other){
@@ -194,6 +191,15 @@ public class PlayerController : MonoBehaviour
         if(distanceToPlayer > 3 )
         {
             anim.SetBool("alert", false);
+        }
+    }
+
+    // Funcion que vuelve verdaderdo el animator si el enemigo se encuentra a menos de 1 uniades de distancia del jugador
+    void hasWin()
+    {
+       if (CountPickupsLeft() == 0)
+        {
+            winTextObject.SetActive(true);
         }
     }
 }
