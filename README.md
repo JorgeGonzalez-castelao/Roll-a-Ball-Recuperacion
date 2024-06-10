@@ -48,3 +48,41 @@ void MoveEnemy()
         }
     }
 ```
+
+### Mecanicas del jugador
+
+Para darle un mayor dinamismo el jugador sera capaz de aumentar su velocidad si este coje las monedas que tiene por el mapa.
+
+![Imagen Moneda](media/imagenMoneda.png)
+
+Para incentivar al jugador a no demorar demasiado, este perdera un punto de velocidad por cada segundo que pasa.
+
+```csharp
+IEnumerator SpeedReduction()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1);
+            speed = speed - 1;
+            // Actualizar el texto de la velocidad
+            SetCountText();
+        }
+    }
+```
+El **IEnumerator** es para ser pasado luego a una corutina.
+
+Por motivos de que la velocidad puede volverse demasiado alta, y perder el punto de referencia del mapa, ahora puede que al jugador caer por debajo del mapa vuelva a la posición original.
+
+```csharp
+void OutOfBounds()
+    {
+        // Si la bola se sale del plano, se reinicia
+        if (transform.position.y < -10){
+            transform.position = new Vector3(0, 0.5f, 0);
+            rb.velocity = Vector3.zero;
+        }
+    }
+```
+
+Una demostración de como se ve el la mecanica en el juego.
+![Imagen Moneda](media/gifReset.gif)
