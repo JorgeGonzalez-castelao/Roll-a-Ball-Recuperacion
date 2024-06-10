@@ -65,34 +65,43 @@ public class PlayerController : MonoBehaviour
 
 		SpawnPickupsRandomly();
 		SpawnColumnsRandomly();
+        SpawnEnemy();
 		SetCountText();
 		
         // Desactivamos el cuadro de victoria
         winTextObject.SetActive(false);
         StartCoroutine(SpeedReduction());
     }
+
     int CountPickupsLeft(string tag = "PickUp")
     {
         // Cuenta el numero de objetos en la escena
         GameObject[] pickups = GameObject.FindGameObjectsWithTag("PickUp");
 
         int pickupCount = pickups.Length;
+        // si el contador es igual a 0 entonces se vuelve verdaderdo el hasWin del animator
+        if (pickupCount == 0)
+        {
+            anim.SetBool("hasWin", true);
+        }
 		return pickupCount;
     }
+
     float CountSpeed()
     {
         // Cuenta la velocidad de la bola
         float speedNow = speed;
 		return speedNow;
     }
+
     private void FixedUpdate(){
         Vector3 movement = new Vector3 (movementX, 0.0f, movementY);
         rb.AddForce(movement * speed);
 
         OutOfBounds();
-		
+		hasToBeAlert();
     }
-    
+
     void OnMove(InputValue movementValue){
         Vector2 movementVector = movementValue.Get<Vector2>();
         Debug.Log(movementVector);
@@ -113,7 +122,7 @@ public class PlayerController : MonoBehaviour
 	void SetCountText()
 	{
 		countText.text = "Count: " + count.ToString();
-		countText.text = countText.text + "\Pick Ups left: " + CountPickupsLeft().ToString();
+		countText.text = countText.text + "\nPick Ups left: " + CountPickupsLeft().ToString();
 		countText.text = countText.text + "\nSpeed: " + speed.ToString() ;
 		if (CountPickupsLeft() == 0)
         {
@@ -155,6 +164,11 @@ public class PlayerController : MonoBehaviour
             Instantiate(ColumnsPrefab, spawnPosition, Quaternion.identity);
         }
     }
+	void SpawnEnemy()
+    {
+        Vector3 spawnPosition = new Vector3(0, 0.5f, 3);
+        Instantiate(EnemyPrefab, spawnPosition, Quaternion.identity);        
+    }
 
 
     // function that every second reduce in 1 the speed of the player
@@ -165,6 +179,21 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(1);
             speed = speed - 1;
             SetCountText();
+        }
+    }
+
+    // Funcion que vuelve verdaderdo el animator si el enemigo se encuentra a menos de 1 uniades de distancia del jugador
+    void hasToBeAlert()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, EnemyPrefab.transform.position);
+        if (distanceToPlayer <= 3)
+        {
+            anim.SetBool("alert", true);
+        }
+
+        if(distanceToPlayer > 3 )
+        {
+            anim.SetBool("alert", false);
         }
     }
 }
