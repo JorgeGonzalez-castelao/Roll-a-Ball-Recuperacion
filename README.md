@@ -21,7 +21,7 @@ Para darle un poco mas de complejidad, se le dio la habilidad de aumentar su num
 ```csharp
 void SpawnEnemy()
     {
-        // Spawn a new enemy
+        // Genera un nuevo enemigo
         Instantiate(enemyPrefab, transform.position, Quaternion.identity);
     }
 ```
@@ -29,3 +29,22 @@ void SpawnEnemy()
 Así como el darle la habilidad de que cuando el jugador salte el enemigo iguale su altura, evitando así que el jugador salte sobre ellos, y los ignore.
 
 ![Escena Enemigos aereos](media/imagenMultiplesEnemigoAereo.png)
+
+La opción mas avanzada del enemigo, es que cuando el jugador se aleje mucho del enemigo, este aparecera en su ubicación aproximada, dando como resultado que el jugador no pueda escapar de el, y que el jugador intente regular su velocidad.
+```csharp	
+void MoveEnemy()
+    {
+        // Para ver si el enemigo esta cerca o no del jugador
+        float distanceToPlayer = Vector3.Distance(transform.position, target.position);
+
+        if (distanceToPlayer > 10)
+        {
+            // Para obtener una posición aproximada del jugador
+            float randomX = Random.Range(target.position.x - 5, target.position.x + 5);
+            float randomZ = Random.Range(target.position.z - 5, target.position.z + 5);
+
+            // Mover el enemigo a la posición aproximada del jugador
+            transform.position = new Vector3(randomX , target.position.y, randomZ);
+        }
+    }
+```
